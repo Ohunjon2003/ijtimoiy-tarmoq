@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}
+Profile /@{{user.username}}
+{% endblock title %}
+
+
+{% block content %}
+<img crossorigin="cover-image" src="{{user.cover.url}}" alt="">
+<div class="container">
+
+    <div class="profile-user-info">
+        <img class="profile-image" src="{{user.profile.url}}" alt="">
+        <h4 class="profile-user-name">{{user.get_full_name}}</h4>
+        <span class="profile-user-username">@{{user.username}}</span>
+        <p class="profile-user-bio mt-2 ">{{user.bio}}</p>
+        <span class="profile-user-add-info"> Joined:{{user.date_joined|timesince}} </span>
+
+
+        <p class="profile-following-count">
+            <strong>{{user.followings.all.count}}</strong> following
+            &#160;&#160;&#160;&#160;&#160;&#160;
+            <strong>{{user.followers.all.count}}</strong> followers
+            &#160;&#160;&#160;&#160;&#160;&#160;
+            {% if user == request.user %}
+            <a href="{% url 'update' %}" class="btn">Tahrirlash</a>
+            {% else %}
+            <form action="{% url 'follow' %}" method="post">
+             {% csrf_token %}
+        <input type="hidden" name="username" value="{{user.username}}">
+        <input type="hidden" name="redirect_url" value="{% url 'profile' user.username %}">
+        <button class="btn" type="submit">{% if is_followed %} Unfollow {% else %} Follow {% endif %}</button>
+    </form>
+            {% endif %}
+
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock content %}
